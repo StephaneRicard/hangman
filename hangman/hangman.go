@@ -107,10 +107,21 @@ func letterInWord(guess string, letters []string) bool {
 func (g *Game) giveIndice(guess string) {
 	g.Indice++
 	if g.Indice < 4 {
-		l := PickLetter(g.Letters)
+		var l string
+		found := true
+		for found {
+			l = PickLetter(g.Letters)
+			found = false
+			for _, foundLetter := range g.FoundLetters {
+				if strings.Contains(foundLetter, l) {
+					found = true
+					break
+				}
+			}
+		}
+
 		g.RevealLetter(l)
 	}
-	fmt.Println("Tu as déjà utilisé tous tes indices !")
 }
 
 func PickLetter(letters []string) string {

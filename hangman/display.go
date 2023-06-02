@@ -139,8 +139,6 @@ func drawState(g *Game, guess string) {
 	fmt.Print("utilisé: ")
 	drawLetters((g.UsedLetters))
 
-	fmt.Print("nombre d'essai restant : ")
-
 	switch g.State {
 	case "goodGuess":
 		fmt.Println("Bien joué!")
@@ -153,7 +151,9 @@ func drawState(g *Game, guess string) {
 		drawLetters(g.Letters)
 	case "won":
 		fmt.Println("Tu as gagné ! Félicitation ! Le mot était: ")
+		score := 20 - g.Indice - g.TotalTurn
 		drawLetters(g.Letters)
+		fmt.Printf("Ton score est de %v/20\n", score)
 
 	}
 
