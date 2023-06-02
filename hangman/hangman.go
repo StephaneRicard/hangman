@@ -2,7 +2,9 @@ package hangman
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 type Game struct {
@@ -11,6 +13,8 @@ type Game struct {
 	FoundLetters []string
 	UsedLetters  []string
 	TurnsLeft    int
+	TotalTurn    int
+	Indice       int
 }
 
 func New(turns int, word string) (*Game, error) {
@@ -30,6 +34,8 @@ func New(turns int, word string) (*Game, error) {
 		FoundLetters: found,
 		UsedLetters:  []string{},
 		TurnsLeft:    turns,
+		TotalTurn:    0,
+		Indice:       0,
 	}
 
 	return g, nil
@@ -37,6 +43,7 @@ func New(turns int, word string) (*Game, error) {
 
 func (g *Game) MakeAGuess(guess string) {
 	guess = strings.ToUpper(guess)
+	g.TotalTurn++
 
 	switch g.State {
 	case "won", "lost":
@@ -52,9 +59,11 @@ func (g *Game) MakeAGuess(guess string) {
 		if hasWon(g.Letters, g.FoundLetters) {
 			g.State = "won"
 		}
+	} else if guess == "INDICE" {
+		g.giveIndice(guess)
 	} else {
 		g.State = "badGuess"
-		g.LoseTurn((guess))
+		g.LooseTurn((guess))
 
 		if g.TurnsLeft == 0 {
 			g.State = "lost"
@@ -72,7 +81,7 @@ func (g *Game) RevealLetter(guess string) {
 	}
 }
 
-func (g *Game) LoseTurn(guess string) {
+func (g *Game) LooseTurn(guess string) {
 	g.TurnsLeft--
 	g.UsedLetters = append(g.UsedLetters, guess)
 }
@@ -93,4 +102,19 @@ func letterInWord(guess string, letters []string) bool {
 		}
 	}
 	return false
+}
+
+func (g *Game) giveIndice(guess string) {
+	g.Indice++
+	if g.Indice < 4 {
+		l := PickLetter(g.Letters)
+		g.RevealLetter(l)
+	}
+	fmt.Println("Tu as déjà utilisé tous tes indices !")
+}
+
+func PickLetter(letters []string) string {
+	rand.Seed(time.Now().Unix())
+	i := rand.Intn(len(letters))
+	return letters[i]
 }

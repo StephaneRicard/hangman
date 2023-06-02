@@ -18,7 +18,7 @@ func ReadGuess() (guess string, err error) {
 			return guess, err
 		}
 		guess = strings.TrimSpace(guess)
-		if len(guess) != 1 {
+		if len(guess) != 1 && guess != "INDICE" {
 			fmt.Printf("lettre non valide. lettre =%v, len=%v\n", guess, len(guess))
 			continue
 		}
